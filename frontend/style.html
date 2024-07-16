@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verification</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Upload Certificates</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <div>
+        <label for="csvFile">Upload CSV:</label>
+        <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+      </div>
+      <button type="submit">Upload</button>
+    </form>
+    <div id="uploadResult"></div>
+    
+    <h1>Certificate Verification</h1>
+    <form id="verificationForm">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div>
+        <label for="certificateId">Certificate ID:</label>
+        <input type="text" id="certificateId" name="certificateId" required>
+      </div>
+      <button type="submit">Verify</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('#uploadForm').submit(function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        $.ajax({
+          type: 'POST',
+          url: '/api/upload-csv',
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function(response) {
+            $('#uploadResult').html('<p>CSV uploaded successfully!</p>');
+          },
+          error: function(error) {
+            $('#uploadResult').html('<p>Error uploading CSV.</p>');
+          }
+        });
+      });
+
+      $('#verificationForm').submit(function(event) {
+        event.preventDefault();
+        const formData = {
+          name: $('#name').val(),
+          email: $('#email').val(),
+          certificateId: $('#certificateId').val(),
+        };
+
+        $.ajax({
+          type: 'POST',
+          url: '/api/verify',
+          data: JSON.stringify(formData),
+          contentType: 'application/json',
+          success: function(response) {
+            $('#result').html(`
+              <h2>Certificate Found</h2>
+              <p>Name: ${response.certificate.name}</p>
+              <p>Email: ${response.certificate.email}</p>
+              <p>Certificate ID: ${response.certificate.certificateId}</p>
+              <p>Issue Date: ${new Date(response.certificate.issueDate).toLocaleDateString()}</p>
+              <p><a href="${response.certificate.fileUpload}" target="_blank">View Certificate</a></p>
+            `);
+          },
+          error: function(error) {
+            $('#result').html('<h2>Certificate Not Found</h2>');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# .gitignore
+
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment Variables
+.env
+
+# Directory for uploading files
+uploads/
+
+# OS files
+.DS_Store
+
+# Other
+coverage/
