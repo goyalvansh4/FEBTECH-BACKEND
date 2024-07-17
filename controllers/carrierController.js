@@ -11,6 +11,7 @@ exports.createCarrier = async (req, res) => {
 
         sendCarrierEmail(name, email, mobile, applyFor, file, (error, info) => {
             if (error) {
+                console.log(error);
                 return res.status(500).json({ status: "error", message: error.message });
             }
             res.status(200).json({ status: "success", message: "Carrier created and email sent successfully", info });

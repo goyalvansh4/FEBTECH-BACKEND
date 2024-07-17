@@ -1,17 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const multerConfig = require('../middleware/multercareeir');
 const carrierController = require('../controllers/carrierController');
+const upload = require('../middleware/multercareer');
 
-// POST /api/carrier/create
-router.post('/create', multerConfig.single('file'), carrierController.createCarrier);
-
-// GET /api/carrier/
-router.get('/', carrierController.getAllCarriers);
+router.post('/create', upload.single('file'), carrierController.createCarrier);
+router.get('/all', carrierController.getAllCarriers);
 
 module.exports = router;
-
-
-
-
-
